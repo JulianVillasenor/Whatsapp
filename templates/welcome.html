@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome, Developer</title>
+    <style>
+        /* Variables de diseño y soporte para modo oscuro automático */
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #0f172a;
+            --text-muted: #64748b;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --border-color: #e2e8f0;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #0f172a;
+                --card-bg: #1e293b;
+                --text-color: #f8fafc;
+                --text-muted: #94a3b8;
+                --accent-color: #60a5fa;
+                --accent-hover: #3b82f6;
+                --border-color: #334155;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 650px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .welcome-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 40px 30px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        .code-badge {
+            display: inline-block;
+            font-family: "Courier New", Courier, monospace;
+            background-color: var(--border-color);
+            color: var(--accent-color);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        /* Sección de enlaces/recursos rápidos */
+        .links-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        @media (max-width: 480px) {
+            .links-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .dev-link {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 16px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text-color);
+            text-align: left;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .dev-link:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-color);
+        }
+
+        .dev-link strong {
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .dev-link span {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        .cta-button:hover {
+            background-color: var(--accent-hover);
+        }
+
+        footer {
+            margin-top: 24px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="welcome-card">
+            <div class="code-badge">&lt;hello_world&gt;</div>
+            
+            <h1>¡Bienvenido, Developer!</h1>
+            <p class="subtitle">Tu entorno está listo. Hemos preparado los accesos directos más importantes para que empieces a construir de inmediato.</p>
+            
+            <!-- Reemplaza los '#' con las URLs reales de tu proyecto -->
+            <div class="links-grid">
+                <a href="#" class="dev-link">
+                    <strong>Documentación 📚</strong>
+                    <span>Guías, APIs y referencias.</span>
+                </a>
+                <a href="#" class="dev-link">
+                    <strong>Repositorio 💻</strong>
+                    <span>Código fuente en GitHub / GitLab.</span>
+                </a>
+                <a href="#" class="dev-link">
+                    <strong>Ambiente Local ⚙️</strong>
+                    <span>localhost:3000 / Panel de control.</span>
+                </a>
+                <a href="#" class="dev-link">
+                    <strong>Soporte / Slack 💬</strong>
+                    <span>Comunidad y resolución de dudas.</span>
+                </a>
+            </div>
+
+            <a href="#" class="cta-button">Ir al Dashboard →</a>
+        </div>
+
+        <footer>
+            <span>// Happy coding. Built with HTML & CSS.</span>
+        </footer>
+    </div>
+
+</body>
+</html>

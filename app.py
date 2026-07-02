@@ -1,11 +1,11 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 import util
 import whatsappservice
 
 app = Flask(__name__)
 @app.route('/welcome', methods=['GET'])
 def index():
-    return "welcome developer"
+    return render_template('welcome.html')
 
 @app.route('/whatsapp', methods=['GET'])
 def VerifyToken():
