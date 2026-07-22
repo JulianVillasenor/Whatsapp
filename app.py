@@ -3,6 +3,16 @@ import util
 import whatsappservice
 
 app = Flask(__name__)
+@app.route("/", methods=["GET"])
+def home():
+    return {
+        "status": "ok",
+        "service": "Viga Constructores WhatsApp Chatbot",
+        "endpoints": [
+            "/welcome",
+            "/whatsapp"
+        ]
+    }, 200
 @app.route('/welcome', methods=['GET'])
 def index():
     return render_template('welcome.html')
