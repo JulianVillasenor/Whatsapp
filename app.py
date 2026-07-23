@@ -64,7 +64,7 @@ def GenerateMessage(text, number):
     if "video" in text:
         data = util.VideoMessage(number)
     if "button" in text:
-        data = util.ButtonMessage(number)
+        data = util.ButtonsMessage(number)
     if "location" in text:
         data = util.LocationMessage(number)
     if "list" in text:

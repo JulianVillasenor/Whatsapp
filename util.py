@@ -97,7 +97,7 @@ def LocationMessage(number):
 }
     return data
 
-def ButtonMessage(number):
+def ButtonsMessage(number):
     data = {
         "messaging_product": "whatsapp",
         "to": number,
@@ -105,21 +105,21 @@ def ButtonMessage(number):
         "interactive": {
             "type": "button",
             "body": {
-                "text": "¿Desea continuar?"
+                "text": "¿Desea continuar? 😊"
             },
             "action": {
                 "buttons": [
                     {
                         "type": "reply",
                         "reply": {
-                            "id": "button1",
+                            "id": "001",
                             "title": "Sí"
                         }
                     },
                     {
                         "type": "reply",
                         "reply": {
-                            "id": "button2",
+                            "id": "002",
                             "title": "No"
                         }
                     }
