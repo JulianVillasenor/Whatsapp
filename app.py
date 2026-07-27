@@ -1,4 +1,5 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
+import os
 import util
 import whatsappservice
 
@@ -10,7 +11,8 @@ def home():
         "service": "Viga Constructores WhatsApp Chatbot",
         "endpoints": [
             "/welcome",
-            "/whatsapp"
+            "/whatsapp",
+            "/test-whatsapp"
         ]
     }, 200
 @app.route('/welcome', methods=['GET'])
@@ -50,25 +52,72 @@ def RecivedMessage():
     except:
         return "EVENT_RECEIVED"
 
+@app.route("/test-whatsapp", methods=["GET"])
+def test_whatsapp():
+    try:
+        number = os.getenv("WHATSAPP_TEST_RECIPIENT")
+
+        if not number:
+            return jsonify({
+                "ok": False,
+                "error": (
+                    "No existe la variable de entorno "
+                    "WHATSAPP_TEST_RECIPIENT."
+                ),
+            }), 500
+
+        data = {
+            "messaging_product": "whatsapp",
+            "recipient_type": "individual",
+            "to": number,
+            "type": "text",
+            "text": {
+                "preview_url": False,
+                "body": (
+                    "✅ Mensaje enviado desde Render.\n\n"
+                    "El chatbot de Viga Constructores "
+                    "ya puede comunicarse con WhatsApp."
+                ),
+            },
+        }
+
+        response = whatsappservice.SendMessageWhatsapp(data)
+
+        return jsonify({
+            "ok": True,
+            "message": "Solicitud enviada a WhatsApp.",
+            "meta_response": response,
+        }), 200
+
+    except Exception as error:
+        print(f"Error en /test-whatsapp: {error}")
+
+        return jsonify({
+            "ok": False,
+            "error": str(error),
+        }), 500
+
 def GenerateMessage(text, number):
     if "text" in text:
         data = util.TextMessage("Text", number)
-    if "format" in text:
+    elif "format" in text:
         data = util.TextFormatMessage(number)
-    if "image" in text:
+    elif "image" in text:
         data = util.ImageMessage(number)
-    if "audio" in text:
+    elif "audio" in text:
         data = util.AudioMessage(number)
-    if "document" in text:
+    elif "document" in text:
         data = util.DocumentMessage(number)
-    if "video" in text:
+    elif "video" in text:
         data = util.VideoMessage(number)
-    if "button" in text:
+    elif "button" in text:
         data = util.ButtonsMessage(number)
-    if "location" in text:
+    elif "location" in text:
         data = util.LocationMessage(number)
-    if "list" in text:
+    elif "list" in text:
         data = util.ListMessage(number)
+    else:
+        data = util.TextMessage("No entendi el mensaje", number)
     whatsappservice.SendMessageWhatsapp(data)
 
 
