@@ -126,39 +126,57 @@ function parsePlanFileName_(fileName) {
     .filter(Boolean);
 
   /*
-   * Convención inicial esperada:
+   * Convención real:
    *
-   * Diaz_A.pdf
-   * Lagos_Diaz_A.pdf
-   *
-   * La interpretación se podrá ajustar después de revisar
-   * los nombres reales de la empresa.
+   * MONTAÑO_A01.pdf
+   * MONTAÑO_AAC01.pdf
+   * MONTAÑO_E01.pdf
+   * MONTAÑO_IE01.pdf
+   * MONTAÑO_IHS01.pdf
+   * MONTAÑO_PYV01.pdf
    */
 
-  if (parts.length >= 3) {
-    return {
-      projectCode: parts[0],
-      clientCode: parts[1],
-      planTypeCode: parts[2].toUpperCase(),
-      planType: getPlanTypeName_(parts[2]),
-    };
+  const projectCode = parts[0] || '';
+  const rawPlanCode = parts[1] || '';
+
+  /*
+   * Separa letras y número:
+   *
+   * A01   -> A + 01
+   * AAC01 -> AAC + 01
+   * IE01  -> IE + 01
+   * IHS01 -> IHS + 01
+   */
+  const match = rawPlanCode.match(/^([A-ZÁÉÍÓÚÜÑ]+)(\d+)$/i);
+
+  let planTypeCode = rawPlanCode.toUpperCase();
+
+  if (match) {
+    planTypeCode = match[1].toUpperCase();
   }
 
-  if (parts.length === 2) {
-    return {
-      projectCode: '',
-      clientCode: parts[0],
-      planTypeCode: parts[1].toUpperCase(),
-      planType: getPlanTypeName_(parts[1]),
-    };
+  /*
+   * Caso especial:
+   * En tus archivos aparece AAC01, pero el catálogo usa AA.
+   */
+  if (planTypeCode === 'AAC') {
+    planTypeCode = 'AA';
   }
 
   return {
-    projectCode: '',
-    clientCode: parts[0] || cleanName,
-    planTypeCode: '',
-    planType: 'Desconocido',
+    projectCode: normalizeCode_(projectCode),
+    clientCode: normalizeCode_(projectCode),
+    planTypeCode: planTypeCode,
+    planType: getPlanTypeName_(planTypeCode),
   };
+}
+
+function normalizeCode_(value) {
+  return String(value || '')
+    .trim()
+    .toUpperCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
 }
 
 function getPlanTypeName_(code) {
@@ -167,16 +185,14 @@ function getPlanTypeName_(code) {
     .toUpperCase();
 
   const types = {
-    A: 'Arquitectónico',
-    ARQ: 'Arquitectónico',
-    E: 'Estructural',
-    EST: 'Estructural',
-    H: 'Hidrosanitario',
-    HS: 'Hidrosanitario',
-    I: 'Instalaciones',
-    EL: 'Eléctrico',
-    ELEC: 'Eléctrico',
-    AC: 'Acabados',
+    A: "Arquitectónico",
+    AA: "Aire acondicionado",
+    IS: "Instalación sanitaria",
+    IH: "Instalación hidráulica",
+    IHS: "Instalación hidrosanitaria",
+    IE: "Instalación eléctrica",
+    PYV: "Puertas y ventanas",
+    E: "Estructural",
   };
 
   return types[normalized] || 'Desconocido';
