@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template, jsonify
-import os
+
 import util
 import whatsappservice
 
@@ -55,16 +55,7 @@ def RecivedMessage():
 @app.route("/test-whatsapp", methods=["GET"])
 def test_whatsapp():
     try:
-        number = os.getenv("WHATSAPP_TEST_RECIPIENT")
-
-        if not number:
-            return jsonify({
-                "ok": False,
-                "error": (
-                    "No existe la variable de entorno "
-                    "WHATSAPP_TEST_RECIPIENT."
-                ),
-            }), 500
+        number = "526622056174"
 
         data = {
             "messaging_product": "whatsapp",
@@ -73,29 +64,23 @@ def test_whatsapp():
             "type": "text",
             "text": {
                 "preview_url": False,
-                "body": (
-                    "✅ Mensaje enviado desde Render.\n\n"
-                    "El chatbot de Viga Constructores "
-                    "ya puede comunicarse con WhatsApp."
-                ),
+                "body": "Hola Julián 👋 Esta es una prueba desde Render.",
             },
         }
 
-        response = whatsappservice.SendMessageWhatsapp(data)
+        result = whatsappservice.SendMessageWhatsapp(data)
 
-        return jsonify({
-            "ok": True,
-            "message": "Solicitud enviada a WhatsApp.",
-            "meta_response": response,
-        }), 200
+        return {
+            "ok": result
+        }, 200 if result else 500
 
     except Exception as error:
-        print(f"Error en /test-whatsapp: {error}")
+        print("Error en /test-whatsapp:", error)
 
-        return jsonify({
+        return {
             "ok": False,
             "error": str(error),
-        }), 500
+        }, 500
 
 def GenerateMessage(text, number):
     if "text" in text:
