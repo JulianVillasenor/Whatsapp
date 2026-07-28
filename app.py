@@ -96,7 +96,11 @@ def GenerateMessage(text, number):
         )
         return whatsappservice.SendMessageWhatsapp(data)
 
-    if "eléctrico" in texto or "electrico" in texto or "ie" in texto:
+    if (
+        "eléctrico" in texto
+        or "electrico" in texto
+        or texto.strip() == "ie"
+    ):
         tipo = "IE"
     elif "arquitectónico" in texto or "arquitectonico" in texto:
         tipo = "A"
