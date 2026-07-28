@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template, jsonify
-
+import sheets_service
 import util
 import whatsappservice
 
@@ -83,27 +83,50 @@ def test_whatsapp():
         }, 500
 
 def GenerateMessage(text, number):
-    if "text" in text:
-        data = util.TextMessage("Text", number)
-    elif "format" in text:
-        data = util.TextFormatMessage(number)
-    elif "image" in text:
-        data = util.ImageMessage(number)
-    elif "audio" in text:
-        data = util.AudioMessage(number)
-    elif "document" in text:
-        data = util.DocumentMessage(number)
-    elif "video" in text:
-        data = util.VideoMessage(number)
-    elif "button" in text:
-        data = util.ButtonsMessage(number)
-    elif "location" in text:
-        data = util.LocationMessage(number)
-    elif "list" in text:
-        data = util.ListMessage(number)
+    texto = text.lower()
+
+    if "montaño" in texto or "montano" in texto:
+        proyecto = "MONTANO"
+    elif "ziga" in texto:
+        proyecto = "ZIGA"
     else:
-        data = util.TextMessage("No entendi el mensaje", number)
-    whatsappservice.SendMessageWhatsapp(data)
+        data = util.TextMessage(
+            "No pude identificar el proyecto.",
+            number
+        )
+        return whatsappservice.SendMessageWhatsapp(data)
+
+    if "eléctrico" in texto or "electrico" in texto or "ie" in texto:
+        tipo = "IE"
+    elif "arquitectónico" in texto or "arquitectonico" in texto:
+        tipo = "A"
+    elif "aire" in texto or "acondicionado" in texto:
+        tipo = "AA"
+    else:
+        data = util.TextMessage(
+            "No pude identificar el tipo de plano.",
+            number
+        )
+        return whatsappservice.SendMessageWhatsapp(data)
+
+    plano = sheets_service.buscar_plano(proyecto, tipo)
+
+    if plano is None:
+        mensaje = (
+            f"No encontré el plano {tipo} "
+            f"del proyecto {proyecto}."
+        )
+    else:
+        mensaje = (
+            f"Proyecto: {plano['ProyectoCodigo']}\n"
+            f"Plano: {plano['TipoPlano']}\n"
+            f"Archivo: {plano['NombreArchivo']}\n\n"
+            f"{plano['DriveUrl']}"
+        )
+
+    data = util.TextMessage(mensaje, number)
+
+    return whatsappservice.SendMessageWhatsapp(data)
 
 
 if(__name__ == '__main__'):
