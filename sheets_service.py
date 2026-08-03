@@ -197,6 +197,17 @@ def buscar_plano(proyecto, tipo_plano):
             return plano
 
     return None
+def get_proyectos():
+    planos = obtener_planos()
+    proyectos = set()
+
+    for plano in planos:
+        proyecto = plano.get("ProyectoCodigo")
+
+        if proyecto:
+            proyectos.add(proyecto)
+
+    return sorted(proyectos)
 
 
 if __name__ == "__main__":

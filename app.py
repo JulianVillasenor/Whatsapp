@@ -82,6 +82,8 @@ def test_whatsapp():
             "error": str(error),
         }, 500
 
+proyectos = sheets_service.get_proyectos()
+
 def GenerateMessage(text, number):
     texto = text.lower()
 
