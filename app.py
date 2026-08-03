@@ -45,12 +45,6 @@ def RecivedMessage():
         number = message['from']
 
         text = util.GetTextUser(message)
-        texto = text.lower().strip()
-        if es_saludo(texto):
-            try:
-                sheets_service.sicnronizar_planos()
-            except Exception as e:
-                print("Error al sincronizar planos:", e, flush=True)
         proyectos = sheets_service.get_proyectos()
         GenerateMessage(text, number, proyectos)
         print(text)
@@ -89,7 +83,42 @@ def test_whatsapp():
             "error": str(error),
         }, 500
 
-proyectos = sheets_service.get_proyectos()
+#-----------actualizar--------------
+
+def es_actualizar(texto):
+    palabras = {
+        "actualizar",
+        "actualiza",
+        "sincronizar",
+        "sincroniza",
+        "actualizar planos",
+        "sincronizar planos",
+    }
+
+    return texto in palabras
+def responder_actualizar(number):
+    try:
+        resultado = sheets_service.sincronizar_planos()
+
+        mensaje = (
+            "✅ Planos sincronizados correctamente.\n\n"
+            f"Planos encontrados: {resultado['planos']}"
+        )
+
+    except Exception as error:
+
+        mensaje = (
+            "❌ Ocurrió un error al sincronizar los planos.\n\n"
+            f"{error}"
+        )
+
+    data = util.TextMessage(
+        mensaje,
+        number
+    )
+
+    return whatsappservice.SendMessageWhatsapp(data)
+
 #--------------saludos--------------
 def es_saludo(texto):
     saludos = {
@@ -261,6 +290,9 @@ def GenerateMessage(text, number, proyectos):
 
     if es_ayuda(texto):
         return responder_ayuda(number, proyectos)
+
+    if es_actualizar(texto):
+        return responder_actualizar(number)
 
     if es_despedida(texto):
         return responder_despedida(number)
