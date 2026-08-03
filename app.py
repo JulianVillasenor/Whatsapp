@@ -45,6 +45,12 @@ def RecivedMessage():
         number = message['from']
 
         text = util.GetTextUser(message)
+        texto = text.lower().strip()
+        if es_saludo(texto):
+            try:
+                sheets_service.sicnronizar_planos()
+            except Exception as e:
+                print("Error al sincronizar planos:", e, flush=True)
         proyectos = sheets_service.get_proyectos()
         GenerateMessage(text, number, proyectos)
         print(text)

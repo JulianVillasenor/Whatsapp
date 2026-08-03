@@ -12,6 +12,44 @@ SPREADSHEET_ID = "1HktqwQWK5cewOAIENOAMAixQBiLT_IX3Z8QRX3myiNg"
 # Nombre exacto de la pestaña.
 SHEET_NAME = "Planos"
 
+APPS_SCRIPT_SYNC_URL = (
+    "https://script.google.com/macros/s/AKfycbw9rV0iBDQiAcjCOwmQL1gCxnugO9vbI1H-6oKGFiHcRbD2luqvIsWL67A9NKWM4fPN/exec"
+)
+
+def sincronizar_planos():
+    response = requests.post(
+        APPS_SCRIPT_SYNC_URL,
+        timeout=60,
+    )
+
+    print(
+        "APPS SCRIPT STATUS:",
+        response.status_code,
+        flush=True,
+    )
+    print(
+        "APPS SCRIPT RESPONSE:",
+        response.text,
+        flush=True,
+    )
+
+    if response.status_code != 200:
+        raise RuntimeError(
+            f"Apps Script respondió con HTTP "
+            f"{response.status_code}"
+        )
+
+    resultado = response.json()
+
+    if not resultado.get("ok"):
+        raise RuntimeError(
+            resultado.get(
+                "error",
+                "No se pudieron sincronizar los planos.",
+            )
+        )
+
+    return resultado
 
 def normalizar_texto(texto):
     """
@@ -197,6 +235,7 @@ def buscar_plano(proyecto, tipo_plano):
             return plano
 
     return None
+
 def get_proyectos():
     """
     Devuelve los nombres visibles y códigos internos de los proyectos.
