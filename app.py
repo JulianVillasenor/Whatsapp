@@ -45,7 +45,8 @@ def RecivedMessage():
         number = message['from']
 
         text = util.GetTextUser(message)
-        GenerateMessage(text, number)
+        proyectos = sheets_service.get_proyectos()
+        GenerateMessage(text, number, proyectos)
         print(text)
 
         return "EVENT_RECEIVED"
@@ -84,16 +85,22 @@ def test_whatsapp():
 
 proyectos = sheets_service.get_proyectos()
 
-def GenerateMessage(text, number):
+def GenerateMessage(text, number, proyectos):
     texto = text.lower()
-
-    if "montaño" in texto or "montano" in texto:
-        proyecto = "MONTANO"
-    elif "ziga" in texto:
-        proyecto = "ZIGA"
-    else:
+    proyecto = None
+    for nombre_visible, codigo_interno in proyectos.items():
+        if nombre_visible.lower() in texto:
+            proyecto = codigo_interno
+            break
+        
+    if proyecto is None:
+        lista_proyectos = "\n".join(
+            f"- {nombre}"
+            for nombre in proyectos)
         data = util.TextMessage(
-            "No pude identificar el proyecto.",
+            f"No pude identificar el proyecto.\n\n "
+            f"Los proyectos disponibles son:\n"
+            f"{lista_proyectos}",
             number
         )
         return whatsappservice.SendMessageWhatsapp(data)

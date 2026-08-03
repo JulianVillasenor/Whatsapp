@@ -198,16 +198,32 @@ def buscar_plano(proyecto, tipo_plano):
 
     return None
 def get_proyectos():
+    """
+    Devuelve los nombres visibles y códigos internos de los proyectos.
+
+    Ejemplo:
+    {
+        "MONTAÑO": "MONTANO",
+        "TAPIAS": "TAPIAS",
+        "ZIGA": "ZIGA",
+    }
+    """
     planos = obtener_planos()
-    proyectos = set()
+    proyectos = {}
 
     for plano in planos:
-        proyecto = plano.get("ProyectoCodigo")
+        carpeta = str(
+            plano.get("Carpeta") or ""
+        ).strip().upper()
 
-        if proyecto:
-            proyectos.add(proyecto)
+        codigo = str(
+            plano.get("ProyectoCodigo") or ""
+        ).strip().upper()
 
-    return sorted(proyectos)
+        if carpeta and codigo:
+            proyectos[carpeta] = codigo
+
+    return dict(sorted(proyectos.items()))
 
 
 if __name__ == "__main__":
